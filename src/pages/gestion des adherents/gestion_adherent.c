@@ -1,108 +1,105 @@
-//
-// Created by iliass on 1/6/21.
-//
-
 #include "gestion_adherent.h"
 
 listeAdherents liste = NULL;
 void on_valider_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts);
 void on_cancel_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts);
-void on_detail_clicked(GtkButton *button, app_widgets_adher *app_wdgts);//app_widgets_home *app_wdgts);
-// Function to check the character
-// is an alphabet or not
+void on_detail_clicked(GtkButton *button, app_widgets_adher *app_wdgts);
+// Fonction pour vérifier le caractère
+// est un alphabet ou non
 int isChar(char c){
     return ((c >= 'a' && c <= 'z')
             || (c >= 'A' && c <= 'Z'));
 }
 
-// Function to check the character
-// is an digit or not
+// Fonction pour vérifier le caractère
+// est un chiffre ou non
 int isDigit(const char c){
     return (c >= '0' && c <= '9');
 }
 
-// Function to check email id is
-// valid or not
+// Fonction pour vérifier l’id e-mail est
+// valide ou non
 int isValidEmail(char* email){
     int i;
-    // Check the first character
-    // is an alphabet or not
+    // Vérifiez le premier caractère
+    // est un alphabet ou non
     if (!isChar(email[0])) {
 
-        // If it's not an alphabet
-        // email id is not valid
+        // Si ce n’est pas un alphabet
+        // id e-mail n’est pas valide
         return 0;
     }
-    // Variable to store position
-    // of At and Dot
+    // Position variable au magasin
+    // de At et Dot
     int At = -1, Dot = -1;
 
-    // Traverse over the email id
-    // string to find position of
-    // Dot and At
+    // Traversez sur l’id e-mail
+    // chaîne pour trouver la position de
+    // Dot et At
     for (i = 0;i < strlen(email); i++) {
 
-        // If the character is '@'
+        // si le charactre est '@'
         if (email[i] == '@') {
             At = i;
         }
-            // If character is '.'
+            // si le charactere est  '.'
         else if (email[i] == '.') {
             Dot = i;
         }
     }
 
-    // If At or Dot is not present
+    // si At ou Dot n’est pas présent
     if (At == -1 || Dot == -1)
         return 0;
 
-    // If Dot is present before At
+    // si Dot est present Avant At
     if (At > Dot)
         return 0;
 
-    // If Dot is present at the end
+    // si Dot est présent à la fin
     return Dot < (strlen(email) - 1);
 }
 int createUniqueCode(){
     FILE *f=NULL;
     int count,read;
-    f=fopen(adhCount,"rb");
-    if (!f){
+    f=fopen(adhCount,"rb");//ouvre le fichier pointéen mode lecture (binaire).
+    if (!f){//si il y a un erreur au moment d'ouverture de la fiche
         count=0;
     } else {
-        fread(&count,sizeof(int),1,f);
-        fclose(f);
+        fread(&count,sizeof(int),1,f);//la recuperation de nombre des element de la liste qui existe dans le fichier
+        fclose(f);//la furmuture du fichier
     }
-    f=fopen(adhCount,"wb");
-    if (!f){
+    f=fopen(adhCount,"wb");//ouvre le fichier pointé en mode ecriture(binaire).
+    if (!f){//si il y a un erreur au moment d'ouverture de la fiche
         perror("Err");
     } else {
-        count++;
-        fwrite(&count,sizeof (int),1,f);
+        count++;//incrumenter le nombre max par 1
+        fwrite(&count,sizeof (int),1,f);//et en l'ecrire dans le fichier
     }
-    fclose(f);
-    return count-1;
+    fclose(f);//la furmuture de fichier
+    return count-1;//returner l'indice
 }
 donnees* creerAdherent(char *nom_adh,char *prenom_adh,char *adresse_email,char *adresse_personnelle){
-    donnees* p=Malloc(donnees);
-    if (strlen(nom_adh)!=0 && strlen(prenom_adh)!=0 && strlen(adresse_email)!=0 && strlen(adresse_personnelle)!=0) {
-        if(isValidEmail(adresse_email)){
-            p->num_adh = createUniqueCode();
-            strcpy(p->nom_adh, nom_adh);
-            strcpy(p->prenom_adh, prenom_adh);
-            strcpy(p->adresse_email, adresse_email);
-            strcpy(p->adresse_personnelle, adresse_personnelle);
-            p->nbre_emprunts_adh = 0;
-            return p;
+    donnees* p=Malloc(donnees);//l'allocation memoire pour les information de l'adhrent
+    if (strlen(nom_adh)!=0 && strlen(prenom_adh)!=0 && strlen(adresse_email)!=0 && strlen(adresse_personnelle)!=0) {//si tous les information son bien saisie
+        if(isValidEmail(adresse_email)){//et si l'adresse email est valide
+            p->num_adh = createUniqueCode();//generer le code de la nouvelle adhrent a ajouter
+            strcpy(p->nom_adh, nom_adh);//remplissage le nom de l'adhérent
+            strcpy(p->prenom_adh, prenom_adh);//remplissage du prenom de l'adhérent
+            strcpy(p->adresse_email, adresse_email);//remplissage de l'email de l'adhérent
+            strcpy(p->adresse_personnelle, adresse_personnelle);//remplissage de l'adresse  de l'adhérent
+            p->nbre_emprunts_adh = 0;//l'initialisation toujours de nombre d'emprunts à 0
+            return p;//retorner l'adhrent que en est cree
         }
     }
-    return NULL;
+    return NULL;//si une des conditions n'est pas vérifier
 
 }
 donnees* cpyAdherent(int num,char *nom_adh,char *prenom_adh,char *adresse_email,char *adresse_personnelle,int nbre_emprunts_adh){
-    donnees* p=Malloc(donnees);
-    if(isValidEmail(adresse_email)){
-        p->num_adh = num;
+    donnees* p=Malloc(donnees);//l'allocation mémoire pour la zone dans la quelle en mettre une copy de notre adhèrent
+    if(isValidEmail(adresse_email)){//et si l'adresse email est valide
+        //la remplissage de toute les information concernent la copy  de l'adhérent
+        p->num_adh = num;//copie le code de la  adhrent
         strcpy(p->nom_adh, nom_adh);
         strcpy(p->prenom_adh, prenom_adh);
         strcpy(p->adresse_email, adresse_email);
@@ -113,62 +110,63 @@ donnees* cpyAdherent(int num,char *nom_adh,char *prenom_adh,char *adresse_email,
     return NULL;
 }
 listeAdherents insererAdherent(donnees * data,listeAdherents tete){
-    adherent *new=Malloc(adherent);
-    new->infos=data;
-    adherent *p=tete;
-    if (!p || strcmp(data->nom_adh,tete->infos->nom_adh)<=0)
+    adherent *new=Malloc(adherent);//la location memoire pour la nouvelle adhrent a ajouter
+    new->infos=data;//l'initialisation de les information de la nouvelle adh par le s data que on est passe dans les parametre de la fonction
+    adherent *p=tete;//declaration d'un variav=ble temp pour parcoraire la liste
+    if (!p || strcmp(data->nom_adh,tete->infos->nom_adh)<=0)//si la liste est vide en ajoute en tete
     {
         new->suivant=tete;
         tete=new;
         return tete;
     }
     p=tete;
-    while(p->suivant && strcmp(data->nom_adh,p->suivant->infos->nom_adh)>=0)
+    while(p->suivant && strcmp(data->nom_adh,p->suivant->infos->nom_adh)>=0)//en parcoure la liste pour atendre la fin de la liste
     {
         p=p->suivant;
     }
-    new->suivant=p->suivant;
+    new->suivant=p->suivant;//en ajoute la nouvele adh a la fin de la liste
     p->suivant=new;
     return tete;
 }
 listeAdherents chargerAdherents(){
     liste=NULL;
     printf("data %s\n",adhFile);
-    donnees * data=Malloc(donnees);
-    FILE *f=fopen(adhFile,"rb");
-    if (!f) return NULL;
+    donnees * data=Malloc(donnees);//l'allocation memoire d=pour les donner de l'adhrent
+    FILE *f=fopen(adhFile,"rb");//ouverture de la fichier des adhrents en mode lecture
+    if (!f) return NULL;//au cas d'un erreur d'ouverture de fichier
     else{
-        while (fread(data, sizeof(donnees),1,f)==1){
+        while (fread(data, sizeof(donnees),1,f)==1){// la recuperation d'un seulle adh de fichier
             printf("%ld\n",ftell(f));
-            liste=insererAdherent(data,liste);
+            liste=insererAdherent(data,liste);//l'ajout de ce element dans la liste des adhrents
             data=Malloc(donnees);
         }
 
     }
-    fclose(f);
+    fclose(f);//fermeture de fichier des adhrents
     return liste;
 }
 void sauvgarderAdherent(){
     listeAdherents p=liste;
-    FILE *f=fopen(adhFile,"wb");
-    if (!f) perror("err");
+    FILE *f=fopen(adhFile,"wb");//l'ouvrture de ficher des adhrents en mode ecriture
+    if (!f) perror("err");//au cas d'un erreur d'ouverture
     else{
         while (p){
-            fwrite(p->infos, sizeof(donnees),1,f);
-            p=p->suivant;
+            fwrite(p->infos, sizeof(donnees),1,f);//ajouter adhrent par adhrent dans le fichier
+            p=p->suivant;//le passage a l'element suivant
         }
     }
-    fclose(f);
+    fclose(f);//fermeture de fichier des adhrents
 }
 donnees* rechercherAdherent(char* nom,char* prenom){
     listeAdherents p=liste;
+    //parcourire de la liste jusqua trouver l'adhrent a rechercher par son nom  ou a la fin de la lise
     while (p && (strcmp(nom,p->infos->nom_adh)!=0 || strcmp(prenom,p->infos->prenom_adh)!=0))
-        p=p->suivant;
     if (p) return p->infos;
     return NULL;
 }
 donnees* trouverAdherentParID(int numAdr,listeAdherents tete){
     listeAdherents p=tete;
+    //rechercher l'adhrent par son numero
     while (p && p->infos->num_adh!=numAdr)
         p=p->suivant;
     if (p) return p->infos;
@@ -176,9 +174,10 @@ donnees* trouverAdherentParID(int numAdr,listeAdherents tete){
 }
 void modifierAdherent(int num,listeAdherents tete,char *nom_adh,char *prenom_adh,char *adresse_email,char *adresse_personnelle){
     adherent* p=tete;
+    //rechercher l'adhrent pour modifier par les nouveles valeur que en est passer en parameters
     while (p && num!=p->infos->num_adh)
         p=p->suivant;
-    if (p){
+    if (p){//si il existe on va appliquer la modification
         p->infos=cpyAdherent(p->infos->num_adh,nom_adh,prenom_adh,adresse_email,adresse_personnelle,p->infos->nbre_emprunts_adh);
     }
 }
@@ -320,17 +319,6 @@ listeAdherents supprimerAdherent(int num,listeAdherents tete){
     }
     return tete;
 }
-/*
-void on_ajouter_adher_clicked(GtkButton *button, app_widgets_home *app_wdgts){
-     // Check return value from Open Text File dialog box to see if user clicked the Open button
-     if (gtk_dialog_run(GTK_DIALOG (app_wdgts->dialog)) == GTK_RESPONSE_OK) {
-
-     }
-     // Finished with the "Open Text File" dialog box, so hide it
-     gtk_widget_hide(app_wdgts->dialog);
-}
- */
-
 
 void on_ajouter_adr_clicked(GtkButton *button,app_widgets_adher *appWidgets){
     appWidgets->modify_or_add=1;
@@ -428,8 +416,6 @@ void on_valider_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts)
     char adrs[100];
 
     donnees *data;
-    //gtk_widget_hide(app_wdgts->dialog);
-    //gtk_window_close((GtkWindow *) app_wdgts->dialog);
     strcpy(nom,gtk_entry_get_text((GtkEntry *) app_wdgts->input_nom));
     strcpy(prenom,gtk_entry_get_text((GtkEntry *) app_wdgts->input_prenom));
     strcpy(email,gtk_entry_get_text((GtkEntry *) app_wdgts->input_email));
@@ -440,7 +426,6 @@ void on_valider_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts)
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_email, "");
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_adrs, "");
 
-    //gtk_widget_hide(app_wdgts->dialog);//cmnt
     gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_DELETE_EVENT);
     data=creerAdherent(nom,prenom,email,adrs);
     if(data){
@@ -496,30 +481,4 @@ void gestionAdherents(app_widgets_home *appWidgetsHome){
     gtk_widget_hide(appWidgetsAdher->btn_cancel_chercher);
     gtk_widget_hide(appWidgetsAdher->box_detail);
 
-/*
-    children = gtk_container_get_children(GTK_CONTAINER(app_wdgts->body));
-    for(iter = children; iter != NULL; iter = g_list_next(iter))
-        gtk_widget_destroy(GTK_WIDGET(iter->data));
-    g_list_free(children);
-
-    app_wdgts->body_a= GTK_WIDGET(gtk_builder_get_object(builder,"body_adher"));
-    GtkWidget *first=GTK_WIDGET(gtk_builder_get_object(builder,"tool_bar_adher"));
-    GtkWidget *sec=GTK_WIDGET(gtk_builder_get_object(builder,"scrolled_win"));
-    GtkWidget *add=GTK_WIDGET(gtk_builder_get_object(builder,"ajouter_adher"));
-    g_signal_connect (add, "clicked",
-                      G_CALLBACK (on_valider_ajouter_clicked), NULL);
-    app_wdgts->body=GTK_WIDGET(gtk_builder_get_object(app_wdgts->builder,"body_home"));
-    gtk_widget_unparent(first);
-    gtk_widget_unparent(sec);
-    gtk_container_add((GtkContainer *) app_wdgts->body, first);
-    gtk_container_add((GtkContainer *) app_wdgts->body, sec);
-    gtk_builder_connect_signals(app_wdgts->builder, app_wdgts);
-    /*
-    children = gtk_container_get_children(GTK_CONTAINER(app_wdgts->body_a));
-    for(iter = children; iter != NULL; iter = g_list_next(iter)) {
-        gtk_widget_unparent(iter->data);
-        gtk_container_add((GtkContainer *) app_wdgts->body, iter->data);
-    }
-    g_list_free(children);
-     */
 }
