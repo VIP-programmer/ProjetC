@@ -44,7 +44,7 @@ void afficherLivre(livre*);
 void ouvrirfichier(char *ch,char *ch1,int *n);
 //void fermergestionLivre(char *,char *,listeLivre *,int *);
 void fermergestionLivre(char *ch,char *ch1);
-void afiichageListeLivre(listeLivre *tete,app_widgets_livres *appWidgetsLivre);
+void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre);
 void afficherUnLive(int num,app_widgets_livres *appWidgetsLivre);
 void gestionLivres(app_widgets_home *appWidgetsHome);
 #endif //PROJET_C_GESTION_LIVRE_H

@@ -125,6 +125,8 @@ typedef struct {
     GtkWidget *box_table;
     GtkWidget *dialog_livre;
     GtkWidget *chercher_livre,
+            *annuler_chercher_livre,
+            *input_chercher_livre,
             *categorie,
             *ajouter_livre,
             *table_livres,

@@ -185,8 +185,9 @@ void on_livre_detail_clicked(GtkButton *button, app_widgets_livres *app_wdgts){/
     gtk_widget_show(app_wdgts->box_detail);
 }
 //l'affichage de toute la iste des livres
-void afiichageListeLivre(listeLivre *tete,app_widgets_livres *appWidgetsLivre){
+void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre){
     listeLivre *temp;
+    int categorie=atoi(gtk_combo_box_get_active_id((GtkComboBox *) appWidgetsLivre->input_categorie_liv));
     GtkWidget *tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
     GtkWidget *ltitre,*lcategorie,*butDetail;
     GList *children, *iter;
@@ -212,20 +213,23 @@ void afiichageListeLivre(listeLivre *tete,app_widgets_livres *appWidgetsLivre){
     else{
 
         while(temp!=NULL){
-            afficherLivre(temp->info);//l'affichage dans le console
+            if (temp->info->ctegorie==categorie) {
+                afficherLivre(temp->info);//l'affichage dans le console
 
-            tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
-            ltitre=gtk_label_new(temp->info->titre_livre);
-            lcategorie=gtk_label_new(CATEGS[temp->info->ctegorie]);
-            butDetail = gtk_button_new_with_mnemonic("détails");
-            gtk_widget_set_name(butDetail,temp->info->titre_livre);
-            g_signal_connect( GTK_WIDGET(butDetail), "clicked", G_CALLBACK( on_livre_detail_clicked ),appWidgetsLivre);
-            gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);
-            gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);
-            gtk_box_pack_start((GtkBox *) tempBox, butDetail, 1, 1, 0);
-            gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
-            gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
-            temp=temp->suiv;
+                tempBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+                ltitre = gtk_label_new(temp->info->titre_livre);
+                lcategorie = gtk_label_new(CATEGS[temp->info->ctegorie]);
+                butDetail = gtk_button_new_with_mnemonic("détails");
+                gtk_widget_set_name(butDetail, temp->info->titre_livre);
+                g_signal_connect(GTK_WIDGET(butDetail), "clicked", G_CALLBACK(on_livre_detail_clicked),
+                                 appWidgetsLivre);
+                gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);
+                gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);
+                gtk_box_pack_start((GtkBox *) tempBox, butDetail, 1, 1, 0);
+                gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
+                gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
+                temp = temp->suiv;
+            }
         }
     }
     gtk_widget_show_all(appWidgetsLivre->box_table);
@@ -347,7 +351,7 @@ void on_valider_ajouter_livre_clicked(GtkButton *button, app_widgets_livres *app
         }
         else modifierLivre(liteLivre,titre,categorie,&aut,app_wdgts->modify_id);
     }
-    afiichageListeLivre(liteLivre,app_wdgts);
+    afichageListeLivre(liteLivre, app_wdgts);
 }
 void on_cancel_ajouter_livre_clicked(GtkButton *button, app_widgets_livres *app_wdgts){
     gtk_dialog_response((GtkDialog *) app_wdgts->dialog_livre, GTK_RESPONSE_DELETE_EVENT);
@@ -383,6 +387,8 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
     // pour le tool bar
     appWidgetsLivre->ajouter_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "ajouter_livre"));
     appWidgetsLivre->chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "chercher_livre"));
+    appWidgetsLivre->annuler_chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "annuler_recherche_livre"));
+    appWidgetsLivre->input_chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "input_chercher_livre"));
     appWidgetsLivre->categorie= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "categorie"));
     appWidgetsLivre->ajouter_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "ajouter_livre"));
     //le traitment sur les detailes
@@ -406,13 +412,15 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
     appWidgetsLivre->nbr_exemplaire= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "nbr_exemplaire"));
 
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->ajouter_livre), "clicked", G_CALLBACK(on_ajoute_livre_clicked ), appWidgetsLivre);
+    g_signal_connect(GTK_WIDGET(appWidgetsLivre->valider_ajouter), "clicked", G_CALLBACK(on_valider_ajouter_livre_clicked), appWidgetsLivre);
+    g_signal_connect(GTK_WIDGET(appWidgetsLivre->cancel_ajouter), "clicked", G_CALLBACK(on_cancel_ajouter_livre_clicked), appWidgetsLivre);
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->retourner_livre), "clicked", G_CALLBACK(on_retourn_clicked ), appWidgetsLivre);
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->supprimer_liv), "clicked", G_CALLBACK(on_supprime_livre_clicked ), appWidgetsLivre);
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->modifier_liv), "clicked", G_CALLBACK(on_modifier_livre_clicked ), appWidgetsLivre);
 
-    afiichageListeLivre(liteLivre,appWidgetsLivre);
+    afichageListeLivre(liteLivre, appWidgetsLivre);
     gtk_builder_connect_signals(appWidgetsLivre->builder, appWidgetsLivre);
-    //gtk_widget_hide(appWidgetsLivre->btn_cancel_chercher);ta ndzid ta ana dak l btn dyal recherche
+    gtk_widget_hide(appWidgetsLivre->annuler_chercher_livre);
     gtk_widget_hide(appWidgetsLivre->box_detail);
 
 }

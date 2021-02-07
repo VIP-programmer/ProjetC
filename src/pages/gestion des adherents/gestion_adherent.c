@@ -482,6 +482,7 @@ void gestionAdherents(app_widgets_home *appWidgetsHome){
     appWidgetsAdher->btn_cancel_chercher= GTK_WIDGET(gtk_builder_get_object(appWidgetsAdher->builder, "btn_clear"));
     appWidgetsAdher->btn_supprimer= GTK_WIDGET(gtk_builder_get_object(appWidgetsAdher->builder, "supprimer_adr"));
     appWidgetsAdher->btn_modifier= GTK_WIDGET(gtk_builder_get_object(appWidgetsAdher->builder, "modifier_adr"));
+    g_signal_connect(GTK_WIDGET(appWidgetsAdher->ajouter_adr), "clicked", G_CALLBACK(on_ajouter_adr_clicked ), appWidgetsAdher);
     g_signal_connect(GTK_WIDGET(appWidgetsAdher->valider_ajout), "clicked", G_CALLBACK(on_valider_ajouter_clicked ), appWidgetsAdher);
     g_signal_connect(GTK_WIDGET(appWidgetsAdher->anuller_ajout), "clicked", G_CALLBACK(on_cancel_ajouter_clicked ), appWidgetsAdher);
     g_signal_connect(GTK_WIDGET(appWidgetsAdher->retour_table), "clicked", G_CALLBACK(on_retourner_clicked ), appWidgetsAdher);

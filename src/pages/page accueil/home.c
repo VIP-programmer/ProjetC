@@ -21,12 +21,13 @@ void startHome(int argc, char *argv[]){
     g_signal_connect( GTK_WIDGET(appWidgets->window), "destroy", G_CALLBACK( on_window_main_destroy ),NULL );//le signale envoyé si en click sur le button destroy
     gtk_widget_show(appWidgets->window);//affichage de la windows
     gtk_main();//Une fois que les signaux sont connectés, il faut lancer la boucle évènementielle en appelant cette fonction
-    //g_slice_free(app_widgets_home, appWidgets);//libérer un bloc de mémoire qui a été alloué
+    g_slice_free(app_widgets_home, appWidgets);//libérer un bloc de mémoire qui a été alloué
 }
 void user_function (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widgets_home *appWidgets){
 
     switch (page_num) { //le teste sur le numéro de la page qui en est entrain d'afficher
         case 1: gestionEmprents(appWidgets);break;//l'appelle a la fonction gestionEmpruntes qui prepare tous les traitements applicable sur les empruntes
+        case 2: gestionLivres(appWidgets);break;//l'appelle a la fonction gestionLivres qui prepare tous les traitements applicable sur les livres
         case 3: gestionAdherents(appWidgets);break;//l'appelle a la fonction gestionAdherent qui prepare tous les traitements applicable sur les adhérents
     }
 }
