@@ -7,14 +7,15 @@ void on_detail_clicked(GtkButton *button, app_widgets_adher *app_wdgts);
 // Fonction pour vérifier le caractère
 // est un alphabet ou non
 int isChar(char c){
-    return ((c >= 'a' && c <= 'z')
-            || (c >= 'A' && c <= 'Z'));
+    if((c >= 'a' && c <= 'z')|| (c >= 'A' && c <= 'Z')) return 1;
+    return 0;
 }
 
 // Fonction pour vérifier le caractère
 // est un chiffre ou non
 int isDigit(const char c){
-    return (c >= '0' && c <= '9');
+    if (c >= '0' && c <= '9') return 1;
+    return 0;
 }
 
 // Fonction pour vérifier l’id e-mail est
@@ -23,7 +24,7 @@ int isValidEmail(char* email){
     int i;
     // Vérifiez le premier caractère
     // est un alphabet ou non
-    if (!isChar(email[0])) {
+    if (isChar(email[0])==0) {
 
         // Si ce n’est pas un alphabet
         // id e-mail n’est pas valide
@@ -57,7 +58,8 @@ int isValidEmail(char* email){
         return 0;
 
     // si Dot est présent à la fin
-    return Dot < (strlen(email) - 1);
+    if(Dot < (strlen(email) - 1))return 1;
+    return 0;
 }
 int createUniqueCode(){
     FILE *f=NULL;
@@ -369,7 +371,9 @@ void on_supprimer_adherent(GtkButton *button, app_widgets_adher *appWidgets){
     gtk_widget_show(appWidgets->box_table);
 }
 void on_modifier_adherent(GtkButton *button, app_widgets_adher *appWidgets){
-    donnees *data=rechercherAdherent(gtk_label_get_label(appWidgets->nom_ader_details),gtk_label_get_label((GtkLabel *) appWidgets->prenom_ader_details));
+    char nom[20];
+    char prenom[20];
+    donnees *data=rechercherAdherent(gtk_label_get_text(appWidgets->nom_ader_details),gtk_label_get_text((GtkLabel *) appWidgets->prenom_ader_details));
     gtk_entry_set_text((GtkEntry *) appWidgets->input_nom, data->nom_adh);
     gtk_entry_set_text((GtkEntry *) appWidgets->input_prenom, data->prenom_adh);
     gtk_entry_set_text((GtkEntry *) appWidgets->input_email, data->adresse_email);
@@ -415,7 +419,7 @@ void on_valider_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts)
     char email[100];
     char adrs[100];
 
-    donnees *data;
+    donnees *data=NULL;
     strcpy(nom,gtk_entry_get_text((GtkEntry *) app_wdgts->input_nom));
     strcpy(prenom,gtk_entry_get_text((GtkEntry *) app_wdgts->input_prenom));
     strcpy(email,gtk_entry_get_text((GtkEntry *) app_wdgts->input_email));
@@ -426,13 +430,14 @@ void on_valider_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts)
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_email, "");
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_adrs, "");
 
-    gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_DELETE_EVENT);
+
     data=creerAdherent(nom,prenom,email,adrs);
     if(data){
         if(app_wdgts->modify_or_add==1) liste=insererAdherent(data,liste);
         else modifierAdherent(app_wdgts->modify_id,liste,data->nom_adh,data->prenom_adh,data->adresse_email,data->adresse_personnelle);
     }
     afficherAdherent(liste,app_wdgts);
+    gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_DELETE_EVENT);
 
 }
 void on_cancel_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts){
