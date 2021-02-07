@@ -447,7 +447,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Le exemplaire</property>
+                    <property name="label" translatable="yes">nombre d'exemplaire disponibles</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -468,6 +468,7 @@
                   <object class="GtkComboBoxText" id="categorie_liv">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="active">0</property>
                     <property name="active_id">0</property>
                     <items>
                       <item id="0" translatable="yes"> poétique</item>
@@ -516,12 +517,17 @@
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/icons8-search-client-30.png</property>
+    <property name="pixbuf">../images/icons8-search-client-30.png</property>
   </object>
   <object class="GtkImage" id="image6">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">../../Projet_C/images/return.png</property>
+  </object>
+  <object class="GtkImage" id="image7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">../images/return.png</property>
   </object>
   <object class="GtkWindow" id="ges_home">
     <property name="can_focus">False</property>
@@ -596,6 +602,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="image">image5</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -624,6 +631,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="image">image7</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -692,14 +700,12 @@
                     <property name="can_focus">False</property>
                     <property name="margin_top">20</property>
                     <child>
-                      <object class="GtkSearchEntry" id="chercher_emprunteur">
-                        <property name="width_request">250</property>
+                      <object class="GtkButton" id="btn_retourner_liste_empr">
+                        <property name="label" translatable="yes">Retourner vers liste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="primary_icon_name">edit-find-symbolic</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">False</property>
-                        <property name="placeholder_text" translatable="yes">Nom prenom</property>
+                        <property name="receives_default">True</property>
+                        <property name="always_show_image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -708,12 +714,50 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="btn_chercher_emprunteur">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image5</property>
-                        <property name="always_show_image">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">10</property>
+                        <property name="label" translatable="yes">les emprunteurs de livre: </property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="emprunteurs_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">10</property>
+                        <property name="label" translatable="yes">_</property>
+                        <property name="single_line_mode">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -724,36 +768,6 @@
                     <child>
                       <placeholder/>
                     </child>
-                    <child>
-                      <object class="GtkButton" id="btn_clear_recherche_emprunteur">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image6</property>
-                        <property name="always_show_image">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="emprunteurs_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_top">10</property>
-                    <property name="margin_bottom">10</property>
-                    <property name="label" translatable="yes">les adherents de livre</property>
-                    <property name="single_line_mode">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -877,21 +891,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBoxText" id="categorie">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <items>
-                          <item id="0" translatable="yes"> poétique</item>
-                          <item id="1" translatable="yes">narratif</item>
-                          <item id="2" translatable="yes">argumentatif</item>
-                          <item id="3" translatable="yes">théâtre</item>
-                        </items>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -1143,7 +1143,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="supprimer_liv">
-                        <property name="label" translatable="yes">supprimer</property>
+                        <property name="label" translatable="yes">supprimer les disponibles</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>

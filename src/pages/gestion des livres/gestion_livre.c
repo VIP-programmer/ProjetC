@@ -8,11 +8,31 @@ char CATEGS[4][15]={"poétique","narratif","argumentatif","théâtre"};
 int *nombre_total_livres;
 app_widgets_home *globalAppWidget=NULL;
 
-livre *saisieLivre(int num,char *titre,int cat,char *nom,char *pre){
+int createUniqueCodeLivre(){
+    FILE *f=NULL;
+    int count,read;
+    f=fopen(livreCount,"rb");//ouvre le fichier pointéen mode lecture (binaire).
+    if (!f){//si il y a un erreur au moment d'ouverture de la fiche
+        count=0;
+    } else {
+        fread(&count,sizeof(int),1,f);//la recuperation de nombre des element de la liste qui existe dans le fichier
+        fclose(f);//la furmuture du fichier
+    }
+    f=fopen(livreCount,"wb");//ouvre le fichier pointé en mode ecriture(binaire).
+    if (!f){//si il y a un erreur au moment d'ouverture de la fiche
+        perror("Err");
+    } else {
+        count++;//incrumenter le nombre max par 1
+        fwrite(&count,sizeof (int),1,f);//et on l'ecrire dans le fichier
+    }
+    fclose(f);//la furmuture de fichier
+    return count-1;//returner l'indice
+}
+livre *saisieLivre(char *titre,int cat,char *nom,char *pre){
     livre* l;
     l=(livre*)malloc(sizeof(livre));
     // ta ndir hna teste wax khawyan wla la
-    l->num_liv=num;
+    l->num_liv=createUniqueCodeLivre();
     strcpy(l->titre_livre,titre);
     l->ctegorie= cat;
     //strcpy(l->categ_liv,cat);
@@ -32,32 +52,33 @@ livre *cpyLivre(int *num,char *titre,int cat,char *nom,char *pre,int emprunteur_
     (l->emprunteur_liv)=emprunteur_livre;
     return l;
 }
-listeLivre * modifierLivre(listeLivre *l,char *titre,int cat,auteur *aut,int num){
+listeLivre * modifierLivre(listeLivre *l,char *titre,char* newTitre,int cat,auteur *aut){
 
     listeLivre *temp=NULL;
     temp=l;
     while(temp != NULL)
     {
+        if (strcmp(temp->info->titre_livre,titre)==0){
+            strcpy(temp->info->titre_livre,newTitre);
+            temp->info->ctegorie= cat;
+            strcpy(temp->info->auteur_liv.nom_aut, aut->nom_aut);
+            strcpy(temp->info->auteur_liv.prenom_aut,aut->prenom_aut);
+        }
         temp=temp->suiv;
     }
-    if (temp){
-        strcpy(temp->info->titre_livre,titre);
-        temp->info->ctegorie= cat;
-        strcpy(temp->info->auteur_liv.nom_aut, aut->nom_aut);
-        strcpy(temp->info->auteur_liv.prenom_aut,aut->prenom_aut);
-    }
+
     return l;
 }
 
-listeLivre *creerLivre(int *num,char *titre,int cat,char *nom,char *pre) {
+listeLivre *creerLivre(livre *elm) {
     listeLivre *nouv =(listeLivre*)malloc(sizeof(listeLivre));
-    nouv->info=saisieLivre(*num,titre,cat,nom,pre);
+    nouv->info=elm;
     nouv->suiv=NULL;
     return nouv;
 }
 
-listeLivre *insererListeEnTete(listeLivre *tete,int *num,char *titre,int cat,char *nom,char *pre){
-    listeLivre *nouveau=creerLivre(num,titre,cat,nom,pre);
+listeLivre *insererListeEnTete(listeLivre *tete,livre *elm){
+    listeLivre *nouveau=creerLivre(elm);
     nouveau->suiv=tete;
     tete = nouveau ;
     return tete ;
@@ -94,32 +115,32 @@ listeLivre *ordonerListeLivre(listeLivre *tete){
 }
 
 
-listeLivre *supprimerLivre(int num,listeLivre *l){
+listeLivre *supprimerLivre(int nombre,char* titre){
     listeLivre *temp=NULL;
-    temp=l;
-    if(l->info->num_liv==num){
-        l=l->suiv;
-        free(temp);
+    temp=liteLivre;
+    while(strcmp(liteLivre->info->titre_livre,titre)==0 && nombre>0 && liteLivre->info->emprunteur_liv==-1){
+        liteLivre=liteLivre->suiv;
+        nombre --;
     }
-    else{
-        while(temp->suiv != NULL)
-        {
-            if(temp->suiv->info->num_liv==num){
-                temp->suiv=temp->suiv->suiv;
-                break;
-            }
-            temp=temp->suiv;
+    while(temp->suiv != NULL && nombre>0)
+    {
+        if(strcmp(temp->suiv->info->titre_livre,titre)==0 && temp->suiv->info->emprunteur_liv==-1){
+            temp->suiv=temp->suiv->suiv;
+            nombre --;
+            continue;
         }
+        temp=temp->suiv;
     }
 
-    return l;
+    return liteLivre;
 }
 void compteurLivres(char *titre,int *emprunte,int *dispo,listeLivre *l){
     listeLivre *temp;
     temp=l;
     while(temp!=NULL){
         if(strcmp(temp->info->titre_livre,titre)==0){
-            (temp->info->emprunteur_liv==-1)?*dispo++:*emprunte++;
+            if (temp->info->emprunteur_liv==-1) *(dispo)+=1;
+            else *(emprunte)+=1;
         }
         temp=temp->suiv;
     }
@@ -135,21 +156,14 @@ livre *RechercheLivre(char *titre,listeLivre *l){
     }
     return NULL;
 }
-livre **trouverPlageLivre(char* titre,listeLivre *livres){
-    livre** tab=NULL;
+listeLivre *trouverPlageLivre(char* titre,listeLivre *livres){
+    listeLivre* tab=NULL;
     int index=0;
     listeLivre *temp;
     temp=livres;
     while(temp!=NULL){
-        if(strcmp(temp->info->titre_livre,titre)==0){
-            if (index==0) {
-                tab=Malloc(livre*);
-            } else {
-                tab=(livre**)realloc(tab,(index+1)* sizeof(livre*));
-            }
-            tab[index]=Malloc(livre);
-            tab[index]=temp->info;
-            index++;
+        if(strcmp(temp->info->titre_livre,titre)==0 && temp->info->emprunteur_liv!=-1){
+            tab=insererEnOrdre(tab,temp->info);
         }
         temp=temp->suiv;
     }
@@ -181,18 +195,19 @@ void on_livre_detail_clicked(GtkButton *button, app_widgets_livres *app_wdgts){/
     gtk_label_set_label((GtkLabel *) app_wdgts->aut_nom_liv_details, donneesLivre->auteur_liv.nom_aut);
     gtk_label_set_label((GtkLabel *) app_wdgts->nb_empr_liv, CnbEmp);
     gtk_label_set_label((GtkLabel *) app_wdgts->nb_desp_liv, CnbDispo);
-    gtk_widget_hide(app_wdgts->box_table);
+    gtk_widget_hide(app_wdgts->container_table);
     gtk_widget_show(app_wdgts->box_detail);
 }
 //l'affichage de toute la iste des livres
 void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre){
     listeLivre *temp;
-    int categorie=atoi(gtk_combo_box_get_active_id((GtkComboBox *) appWidgetsLivre->input_categorie_liv));
     GtkWidget *tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
     GtkWidget *ltitre,*lcategorie,*butDetail;
     GList *children, *iter;
     char id[4];
-    temp=tete;
+    temp=listeUniqueLivre(tete);
+    temp=listeOrdoneCteg(temp);
+    //temp=tete;
     children = gtk_container_get_children(GTK_CONTAINER(appWidgetsLivre->box_table));
     for(iter = children; iter != NULL; iter = g_list_next(iter))
         gtk_widget_destroy(GTK_WIDGET(iter->data));
@@ -213,23 +228,21 @@ void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre){
     else{
 
         while(temp!=NULL){
-            if (temp->info->ctegorie==categorie) {
-                afficherLivre(temp->info);//l'affichage dans le console
+            afficherLivre(temp->info);//l'affichage dans le console
 
-                tempBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-                ltitre = gtk_label_new(temp->info->titre_livre);
-                lcategorie = gtk_label_new(CATEGS[temp->info->ctegorie]);
-                butDetail = gtk_button_new_with_mnemonic("détails");
-                gtk_widget_set_name(butDetail, temp->info->titre_livre);
-                g_signal_connect(GTK_WIDGET(butDetail), "clicked", G_CALLBACK(on_livre_detail_clicked),
-                                 appWidgetsLivre);
-                gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);
-                gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);
-                gtk_box_pack_start((GtkBox *) tempBox, butDetail, 1, 1, 0);
-                gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
-                gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
-                temp = temp->suiv;
-            }
+            tempBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+            ltitre = gtk_label_new(temp->info->titre_livre);
+            lcategorie = gtk_label_new(CATEGS[temp->info->ctegorie]);
+            butDetail = gtk_button_new_with_mnemonic("détails");
+            gtk_widget_set_name(butDetail, temp->info->titre_livre);
+            g_signal_connect(GTK_WIDGET(butDetail), "clicked", G_CALLBACK(on_livre_detail_clicked),
+                             appWidgetsLivre);
+            gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);
+            gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);
+            gtk_box_pack_start((GtkBox *) tempBox, butDetail, 1, 1, 0);
+            gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
+            gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
+            temp = temp->suiv;
         }
     }
     gtk_widget_show_all(appWidgetsLivre->box_table);
@@ -252,7 +265,7 @@ void afficherUnLive(int num,app_widgets_livres *appWidgetsLivre){
     gtk_box_pack_start((GtkBox *) tempBox, gtk_label_new("Actions"), 1, 1, 0);
     gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
     gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
-    if (!liteLivre)
+    if (!liteLivre || num ==-1)
     {
         tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
         ltitre=gtk_label_new("Non Trouvé");
@@ -280,76 +293,137 @@ void afficherUnLive(int num,app_widgets_livres *appWidgetsLivre){
     }
     gtk_widget_show_all(appWidgetsLivre->box_table);
 }
-void ouvrirfichier(char *ch,char *ch1,int *n){//hna ta bxof wax khasseni n7ayad dk nombre_total_livres bax madirlix l maxakil dak wille kif lawal w ma tnssax txarchiga f lachae=rge des les autre
-    FILE *f,*f1;
-    livre l;
+listeLivre *listeUniqueLivre(listeLivre *liste){
+    listeLivre *ptrLivre=liste;
+    listeLivre *listeFinale=NULL;
+    char titre[50];
+    if (ptrLivre) {
+        strcpy(titre, ptrLivre->info->titre_livre);
+        listeFinale=insererEnOrdre(listeFinale,ptrLivre->info);
+        while (ptrLivre){
+            if (strcmp(titre,ptrLivre->info->titre_livre)!=0){
+                strcpy(titre, ptrLivre->info->titre_livre);
+                listeFinale=insererEnOrdre(listeFinale,ptrLivre->info);
+            }
+            ptrLivre = ptrLivre->suiv;
+        }
+    }
+    return listeFinale;
+}
+listeLivre *listeOrdoneCteg(listeLivre *l){
+    listeLivre *ptrLivre;
+    listeLivre *listeFinale=NULL;
+    int indexCteg;
+    for ( indexCteg = 3; indexCteg >=0; indexCteg--) {
+        ptrLivre=l;
+        while (ptrLivre){
+            if (indexCteg==ptrLivre->info->ctegorie){
+                listeFinale=insererListeEnTete(listeFinale,ptrLivre->info);
+            }
+            ptrLivre = ptrLivre->suiv;
+        }
+    }
+    return listeFinale;
+}
+
+listeLivre *listeEmprinter(listeLivre *liste){
+    listeLivre *ptrLivre=liste;
+    listeLivre *listeFinale=NULL;
+    while (ptrLivre){
+        if (ptrLivre->info->emprunteur_liv != -1){
+            listeFinale=insererEnOrdre(listeFinale,ptrLivre->info);
+        }
+        ptrLivre = ptrLivre->suiv;
+    }
+    return listeFinale;
+}
+listeLivre *listeDisponible(listeLivre* liste){
+    listeLivre *ptrLivre=liste;
+    listeLivre *listeFinale=NULL;
+    while (ptrLivre){
+        if (ptrLivre->info->emprunteur_liv == -1){
+            listeFinale=insererEnOrdre(listeFinale,ptrLivre->info);
+        }
+        ptrLivre = ptrLivre->suiv;
+    }
+    return listeFinale;
+}
+listeLivre* chargerLivres(){//hna ta bxof wax khasseni n7ayad dk nombre_total_livres bax madirlix l maxakil dak wille kif lawal w ma tnssax txarchiga f lachae=rge des les autre
+    FILE *f;
+    livre* l=Malloc(livre);
     int i;
     liteLivre=NULL;
-    f=fopen(ch,"rb");f1=fopen(ch1,"rb");
-    if(f==NULL || f1==NULL)printf("erreur d'ouvertur\n");
+    f=fopen(livreFile,"rb");
+    if(f==NULL)printf("erreur d'ouvertur\n");
     else{
-        fread(n,sizeof(int),1,f1);
-
-        for(i=0;i<*n;i++){
-            fread(&l,sizeof(livre),1,f);
-            liteLivre=insererListeEnTete(liteLivre, &(l.num_liv), l.titre_livre, l.ctegorie, l.auteur_liv.nom_aut, l.auteur_liv.prenom_aut);
+        while (fread(l, sizeof(livre),1,f)==1){// la recuperation d'un seulle adh de fichier
+            liteLivre=insererEnOrdre(liteLivre, l);
+            l=Malloc(livre);
         }
-
         fclose(f);
-        fclose(f1);
     }
+    return liteLivre;
 
 }
 
-void fermergestionLivre(char *ch,char *ch1){//ta had l nombre_total_livres ima ndirha global 7ssan ta lmn ba3d!!!!!!
-    FILE *f,*f1;
-    int i;
-    f=fopen(ch,"wb");
-    f1=fopen(ch1,"wb");
-
-    if(f==NULL || f1==NULL)printf("erreur d'ouverture\n");
+void sauvgarderLivres(){
+    listeLivre *liste=liteLivre;
+    FILE *f=fopen(livreFile,"wb");
+    if (!f) perror("err");
     else{
-        fwrite(nombre_total_livres, sizeof(int), 1, f1);
-        printf("la valeur de nombre_total_livres est =%d",*nombre_total_livres);
-        fclose(f1);
-        for(i=0;i<*nombre_total_livres; i++, liteLivre=liteLivre->suiv){
-            fwrite(liteLivre->info,sizeof(livre),1,f);
+        while (liste){
+            fwrite(liste->info, sizeof(livre),1,f);
+            liste=liste->suiv;
         }
-
-        fclose(f);
-        printf("\n\t##### -bien ajouter- #######\n");
     }
-
+    fclose(f);
 }
 void on_valider_ajouter_livre_clicked(GtkButton *button, app_widgets_livres *app_wdgts){
     char titre[20];
     int categorie;
     auteur aut;
+    int nbDispo=0,nbEmpr=0;
     int nb_exempliare;
+    char id[10];
+    int i;
 
     livre *data;
+    strcpy(id,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->input_categorie_liv));
     strcpy(titre,gtk_entry_get_text((GtkEntry *) app_wdgts->input_titre_liv));
-    categorie=atoi(gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->input_categorie_liv));
+    categorie=atoi(id);
     strcpy(aut.nom_aut,gtk_entry_get_text((GtkEntry *) app_wdgts->input_nom_autr));
     strcpy(aut.prenom_aut,gtk_entry_get_text((GtkEntry *) app_wdgts->input_prenom_atr));
-    nb_exempliare=atoi(gtk_entry_get_text((GtkEntry *) app_wdgts->nbr_exemplaire));
+    strcpy(id,gtk_entry_get_text((GtkEntry *) app_wdgts->nbr_exemplaire));
+    nb_exempliare=atoi(id);
 
 
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_titre_liv, "");
-    gtk_combo_box_set_active_id((GtkComboBox *) app_wdgts->input_categorie_liv,0);
+    gtk_combo_box_set_active((GtkComboBox *) app_wdgts->input_categorie_liv,0);
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_nom_autr, "");
     gtk_entry_set_text((GtkEntry *) app_wdgts->input_prenom_atr, "");
     gtk_entry_set_text((GtkEntry *) app_wdgts->nbr_exemplaire, "");
 
     gtk_dialog_response((GtkDialog *) app_wdgts->dialog_livre, GTK_RESPONSE_DELETE_EVENT);
 
-    data=saisieLivre((*nombre_total_livres + 1), titre, categorie, aut.nom_aut, aut.prenom_aut);
+    data=saisieLivre(titre, categorie, aut.nom_aut, aut.prenom_aut);
     if(data){
         if(app_wdgts->modify_or_add==1) {
-            liteLivre = insererEnOrdre(liteLivre, data);
-            (*nombre_total_livres)++;//variable globale de nombre des livre que j'ai
+            for (i = 0; i < nb_exempliare; ++i) {
+                liteLivre = insererEnOrdre(liteLivre, data);
+            }
         }
-        else modifierLivre(liteLivre,titre,categorie,&aut,app_wdgts->modify_id);
+        else{
+            compteurLivres(app_wdgts->modify_titre,&nbEmpr,&nbDispo,liteLivre);
+            if (nbDispo>nb_exempliare)
+                supprimerLivre(nbDispo-nb_exempliare,app_wdgts->modify_titre);
+            else if (nbDispo<nb_exempliare){
+                for (i = 0; i < nb_exempliare-nbDispo; ++i) {
+                    liteLivre = insererEnOrdre(liteLivre, data);
+                }
+            }
+            modifierLivre(liteLivre,app_wdgts->modify_titre,titre,categorie,&aut);
+        }
+
     }
     afichageListeLivre(liteLivre, app_wdgts);
 }
@@ -368,12 +442,74 @@ void on_ajoute_livre_clicked(GtkButton *button,app_widgets_livres *appWidgets){
     gtk_widget_hide(appWidgets->dialog_livre);
 }
 void on_retourn_clicked(GtkButton *button,app_widgets_livres *appWidgets){
-
+    gtk_widget_hide(appWidgets->box_detail);
+    gtk_widget_show(appWidgets->container_table);
 }
 void on_supprime_livre_clicked(GtkButton *button,app_widgets_livres *appWidgets){
-
+    int nbDispo=0,nbEmpr=0;
+    char titre[50];
+    livre* data=NULL;
+    strcpy(titre,gtk_label_get_text((GtkLabel *) appWidgets->titre_liv_details));
+    data=RechercheLivre(titre,liteLivre);
+    compteurLivres(data->titre_livre,&nbEmpr,&nbDispo,liteLivre);
+    supprimerLivre(nbDispo,titre);
+    afichageListeLivre(liteLivre,appWidgets);
+    gtk_widget_hide(appWidgets->box_detail);
+    gtk_widget_show(appWidgets->container_table);
 }
 void on_modifier_livre_clicked(GtkButton *button,app_widgets_livres *appWidgets){
+    char titre[50];
+    int nbDispo=0,nbEmpr=0;
+    char CnbDispo[4];
+    char categorie[4];
+    livre* data=NULL;
+    appWidgets->modify_or_add=0;
+    strcpy(titre,gtk_label_get_text((GtkLabel *) appWidgets->titre_liv_details));
+    data=RechercheLivre(titre,liteLivre);
+    appWidgets->dialog_livre= GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "dialog_livre"));
+    appWidgets->valider_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "valider_ajouter2"));
+    appWidgets->cancel_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "cancel_ajouter2"));
+    g_signal_connect(GTK_WIDGET(appWidgets->valider_ajouter), "clicked", G_CALLBACK(on_valider_ajouter_livre_clicked ), appWidgets);
+    g_signal_connect(GTK_WIDGET(appWidgets->cancel_ajouter), "clicked", G_CALLBACK(on_cancel_ajouter_livre_clicked ), appWidgets);
+
+    compteurLivres(data->titre_livre,&nbEmpr,&nbDispo,liteLivre);
+    sprintf(CnbDispo,"%d",nbDispo);
+    sprintf(categorie,"%d",data->ctegorie);
+    strcpy(appWidgets->modify_titre,titre);
+    gtk_entry_set_text((GtkEntry *) appWidgets->input_titre_liv, data->titre_livre);
+    gtk_combo_box_set_active_id((GtkComboBox *) appWidgets->input_categorie_liv,categorie);
+    gtk_entry_set_text((GtkEntry *) appWidgets->input_nom_autr, data->auteur_liv.nom_aut);
+    gtk_entry_set_text((GtkEntry *) appWidgets->input_prenom_atr, data->auteur_liv.prenom_aut);
+    gtk_entry_set_text((GtkEntry *) appWidgets->nbr_exemplaire, CnbDispo);
+
+    int resp=gtk_dialog_run(GTK_DIALOG (appWidgets->dialog_livre));
+    if(resp==GTK_RESPONSE_DELETE_EVENT) {
+        gtk_widget_hide(appWidgets->box_detail);
+        gtk_widget_show(appWidgets->container_table);
+    }
+    gtk_widget_hide(appWidgets->dialog_livre);
+}
+void on_recherche_livre_clicked(GtkButton *button,app_widgets_livres *appWidgets){
+    char titre[50];
+    livre *liv;
+    gtk_widget_hide(appWidgets->input_chercher_livre);
+    gtk_widget_hide(appWidgets->chercher_livre);
+    gtk_widget_show(appWidgets->annuler_chercher_livre);
+    strcpy(titre,gtk_entry_get_text((GtkEntry *) appWidgets->input_chercher_livre));
+    if(strlen(titre)!=0){
+        liv=RechercheLivre(titre,liteLivre);
+        if(liv) {
+            afficherUnLive(liv->num_liv, appWidgets);
+            return;
+        }
+    }
+    afficherUnLive(-1,appWidgets);
+}
+void on_cancel_recherche_livre_clicked(GtkButton *button,app_widgets_livres *appWidgets){
+    gtk_widget_show(appWidgets->input_chercher_livre);
+    gtk_widget_show(appWidgets->chercher_livre);
+    gtk_widget_hide(appWidgets->annuler_chercher_livre);
+    afichageListeLivre(liteLivre,appWidgets);
 
 }
 void gestionLivres(app_widgets_home *appWidgetsHome){
@@ -384,9 +520,10 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
 
     appWidgetsLivre->box_detail=GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "detail_liv"));
     appWidgetsLivre->box_table= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "table_livres"));
+    appWidgetsLivre->container_table= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "body_livre"));
     // pour le tool bar
     appWidgetsLivre->ajouter_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "ajouter_livre"));
-    appWidgetsLivre->chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "chercher_livre"));
+    appWidgetsLivre->chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "recherche_livre"));
     appWidgetsLivre->annuler_chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "annuler_recherche_livre"));
     appWidgetsLivre->input_chercher_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "input_chercher_livre"));
     appWidgetsLivre->categorie= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "categorie"));
@@ -406,8 +543,8 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
     appWidgetsLivre->input_categorie_liv= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "categorie_liv"));
     appWidgetsLivre->input_prenom_atr= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "prenom_atr"));
     appWidgetsLivre->input_nom_autr= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "nom_autr"));
-    appWidgetsLivre->valider_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "valider_ajouter2"));
-    appWidgetsLivre->cancel_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "cancel_ajouter2"));
+    appWidgetsLivre->valider_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "valider_ajouter_livre"));
+    appWidgetsLivre->cancel_ajouter= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "cancel_ajouter_livre"));
     appWidgetsLivre->dialog_livre= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "dialog_livre"));
     appWidgetsLivre->nbr_exemplaire= GTK_WIDGET(gtk_builder_get_object(appWidgetsLivre->builder, "nbr_exemplaire"));
 
@@ -417,6 +554,8 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->retourner_livre), "clicked", G_CALLBACK(on_retourn_clicked ), appWidgetsLivre);
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->supprimer_liv), "clicked", G_CALLBACK(on_supprime_livre_clicked ), appWidgetsLivre);
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->modifier_liv), "clicked", G_CALLBACK(on_modifier_livre_clicked ), appWidgetsLivre);
+    g_signal_connect(GTK_WIDGET(appWidgetsLivre->chercher_livre), "clicked", G_CALLBACK(on_recherche_livre_clicked), appWidgetsLivre);
+    g_signal_connect(GTK_WIDGET(appWidgetsLivre->annuler_chercher_livre), "clicked", G_CALLBACK(on_cancel_recherche_livre_clicked ), appWidgetsLivre);
 
     afichageListeLivre(liteLivre, appWidgetsLivre);
     gtk_builder_connect_signals(appWidgetsLivre->builder, appWidgetsLivre);

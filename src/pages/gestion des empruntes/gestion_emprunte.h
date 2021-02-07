@@ -9,9 +9,9 @@
 int inCodeEmprunte(int numAdhr,int numLivre);
 int deCodeADR(int numEmpr);
 int deCodeLVR(int numEmpr);
-int emprunteLivre(int numAdhr,int numLivre,listeAdherents adherents,listeLivre* livres);
+int emprunteLivre(int numAdhr,int numLivre);
 void afficheLivreEmpruntes(listeLivre* livres,app_widgets_empr *app_wdgts);
-void afficherAdherEmpruntDe(char *titreLivre,listeLivre* livres,listeAdherents adherents);
-int rendreLivre(int numEmpr,listeAdherents adherents,listeLivre* livres);
+listeAdherents adherEmpruntDe(char *titreLivre);
+int rendreLivre(int idADher,char* titreLivre);
 void gestionEmprents(app_widgets_home *appWidgetsHome);
 #endif //PROJET_C_GESTION_EMPRUNTE_H
