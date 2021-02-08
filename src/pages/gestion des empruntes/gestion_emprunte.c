@@ -5,6 +5,7 @@
 char _CATEGS[4][15]={"poétique","narratif","argumentatif","théâtre"};
 listeAdherents liste_adhers = NULL;
 listeLivre *liste_livres=NULL;
+app_widgets_empr *globalWidgEmpr=NULL;
 
 int inCodeEmprunte(int numAdhr,int numLivre){
     return numLivre*1000+numAdhr;
@@ -253,12 +254,21 @@ void on_cancel_recherche_empr_clicked(GtkButton *button,app_widgets_empr *appWid
     afficheLivreEmpruntes(liste_livres,appWidgets);
 
 }
+void afficheErreurEmpr(char* message, app_widgets_adher *app_wdgts){
+    gtk_message_dialog_format_secondary_text((GtkMessageDialog *) app_wdgts->erreur_dialog, "%s", message);
+    gtk_dialog_run(GTK_DIALOG (app_wdgts->erreur_dialog));
+    gtk_widget_hide(app_wdgts->erreur_dialog);
+}
 void gestionEmprents(app_widgets_home *appWidgetsHome){
+    g_slist_free((GSList *) globalWidgEmpr);
     app_widgets_empr *appWidgetsEmpr=g_slice_new(app_widgets_empr);
+    globalWidgEmpr=appWidgetsEmpr;
     liste_adhers=chargerAdherents();
     liste_livres=chargerLivres();
     appWidgetsEmpr->builder=appWidgetsHome->builder;
+    appWidgetsEmpr->styleProvider=appWidgetsHome->styleProvider;
     appWidgetsEmpr->liste_empruntes= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "liste_empr"));
+    appWidgetsEmpr->TH_table_empr= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "TH_table_empr"));
     appWidgetsEmpr->liste_emprunteurs= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "liste_adr_empr"));
     appWidgetsEmpr->dialog= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "dialog_empr"));
     appWidgetsEmpr->search_livre_empr= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "chercher_titre"));
@@ -269,10 +279,12 @@ void gestionEmprents(app_widgets_home *appWidgetsHome){
     appWidgetsEmpr->table_emprunteurs= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "table_emprunteurs"));
     appWidgetsEmpr->btn_emprunte= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "btn_emprunte"));
     appWidgetsEmpr->emprunteurs_label= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "emprunteurs_label"));
+    appWidgetsEmpr->erreur_dialog= GTK_WIDGET(gtk_builder_get_object(appWidgetsEmpr->builder, "dialog_erreur"));
     g_signal_connect(GTK_WIDGET(appWidgetsEmpr->btn_emprunte), "clicked", G_CALLBACK(on_btn_emprunte_clicked ), appWidgetsEmpr);
     g_signal_connect(GTK_WIDGET(appWidgetsEmpr->btn_retourner_liste_empr), "clicked", G_CALLBACK(on_btn_retourner_empr_clicked ), appWidgetsEmpr);
     g_signal_connect(GTK_WIDGET(appWidgetsEmpr->btn_chercher_livre_empr), "clicked", G_CALLBACK(on_recherche_empr_clicked ), appWidgetsEmpr);
     g_signal_connect(GTK_WIDGET(appWidgetsEmpr->btn_cancel_chercher_livre_empr), "clicked", G_CALLBACK(on_cancel_recherche_empr_clicked ), appWidgetsEmpr);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsEmpr->btn_retourner_liste_empr), GTK_STYLE_PROVIDER(appWidgetsEmpr->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     afficheLivreEmpruntes(liste_livres, appWidgetsEmpr);
     gtk_builder_connect_signals(appWidgetsEmpr->builder, appWidgetsEmpr);
     gtk_widget_hide(appWidgetsEmpr->btn_cancel_chercher_livre_empr);

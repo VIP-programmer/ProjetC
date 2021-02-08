@@ -297,6 +297,41 @@
       </object>
     </child>
   </object>
+  <object class="GtkMessageDialog" id="dialog_erreur">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="message_type">warning</property>
+    <property name="buttons">ok</property>
+    <property name="text" translatable="yes">Erreur:</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="erreur_dialog"/>
+    </style>
+  </object>
   <object class="GtkDialog" id="dialog_livre">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
@@ -458,6 +493,8 @@
                   <object class="GtkEntry" id="nbr_exemplaire">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="max_length">4</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -541,6 +578,7 @@
     </child>
     <child>
       <object class="GtkNotebook" id="notebook">
+        <property name="name">ajouter</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="tab_pos">left</property>
@@ -614,10 +652,14 @@
                     <child>
                       <object class="GtkButton" id="btn_emprunte">
                         <property name="label" translatable="yes">Emprunter</property>
+                        <property name="name">ajouter</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="always_show_image">True</property>
+                        <style>
+                          <class name="add_new"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -633,6 +675,9 @@
                         <property name="receives_default">True</property>
                         <property name="image">image7</property>
                         <property name="always_show_image">True</property>
+                        <style>
+                          <class name="retour"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -645,6 +690,56 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="TH_table_empr">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Nom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Prénom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Actions</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="container"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -679,7 +774,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -706,6 +801,9 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="always_show_image">True</property>
+                        <style>
+                          <class name="retour"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -883,6 +981,9 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="image">image4</property>
+                        <style>
+                          <class name="retour"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -899,10 +1000,14 @@
                     <child>
                       <object class="GtkButton" id="ajouter_livre">
                         <property name="label" translatable="yes">Ajouter +</property>
+                        <property name="name">ajouter</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="always_show_image">True</property>
+                        <style>
+                          <class name="add_new"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -916,6 +1021,56 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="TH_table_livre">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Nom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Prénom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Actions</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="container"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -950,7 +1105,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -972,6 +1127,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="halign">start</property>
+                    <style>
+                      <class name="retour"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -991,6 +1149,7 @@
                     <property name="margin_bottom">20</property>
                     <property name="row_spacing">5</property>
                     <property name="column_spacing">20</property>
+                    <property name="row_homogeneous">True</property>
                     <property name="column_homogeneous">True</property>
                     <child>
                       <object class="GtkLabel" id="titre_livre">
@@ -1147,6 +1306,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <style>
+                          <class name="delete"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1162,6 +1324,9 @@
                         <property name="receives_default">True</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
+                        <style>
+                          <class name="modify"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1247,10 +1412,14 @@
                     <child>
                       <object class="GtkButton" id="ajouter_adr">
                         <property name="label" translatable="yes">Ajouter +</property>
+                        <property name="name">ajouter</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="always_show_image">True</property>
+                        <style>
+                          <class name="add_new"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1278,6 +1447,56 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="TH_table">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Nom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Prénom</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Actions</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="container"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -1312,7 +1531,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -1335,6 +1554,9 @@
                     <property name="receives_default">True</property>
                     <property name="halign">start</property>
                     <signal name="clicked" handler="on_retourner_clicked" swapped="no"/>
+                    <style>
+                      <class name="retour"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1470,6 +1692,9 @@
                         <property name="top_attach">4</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="details"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1487,6 +1712,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <style>
+                          <class name="delete"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1502,11 +1730,25 @@
                         <property name="receives_default">True</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
+                        <style>
+                          <class name="modify"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">False</property>
                         <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAccelLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -1541,5 +1783,10 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="image8">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">../images/return.png</property>
   </object>
 </interface>

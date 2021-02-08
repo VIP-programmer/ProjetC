@@ -21,6 +21,7 @@ typedef struct {
     GtkWidget *window;
     GtkBuilder  *builder;
     GtkWidget *notebook;
+    GtkCssProvider *styleProvider;
 } app_widgets_home;
 
 //structure des widgets
@@ -30,12 +31,15 @@ typedef struct {
     GtkWidget *details;
     GtkWidget *retourner;
     GtkWidget *box_detail;
+    GtkCssProvider *styleProvider;
     GtkWidget *box_table;
     GtkWidget *body;
     GtkWidget *table_adr;
+    GtkWidget *TH_table;
     GtkWidget *ajouter_adr;
     GtkWidget *modifier_adr;
     GtkWidget *supprimer_adr;
+    GtkWidget *container_adher_detail;
     GtkWidget *nom_ader_details;
     GtkWidget *prenom_ader_details;
     GtkWidget *email_ader_details;
@@ -56,6 +60,7 @@ typedef struct {
     GtkWidget *btn_cancel_chercher;
     int modify_or_add;//0 modify 1 add
     int modify_id;
+    GtkWidget *erreur_dialog;
 } app_widgets_adher;
 //structure des widgets
 typedef struct {
@@ -63,8 +68,10 @@ typedef struct {
     GtkWidget *retourner;
     GtkWidget *emprunter;
     GtkWidget *dialog;
+    GtkCssProvider *styleProvider;
     GtkWidget *btn_emprunte;
     GtkWidget *liste_emprunteurs;
+    GtkWidget *TH_table_empr;
     GtkWidget *liste_empruntes;
     GtkWidget *search_livre_empr;
     GtkWidget *btn_chercher_livre_empr;
@@ -78,12 +85,14 @@ typedef struct {
     GtkWidget *cancel_emprunte;
     GtkWidget *choix_livre;
     GtkWidget *choix_adhr;
+    GtkWidget *erreur_dialog;
 } app_widgets_empr;//
 typedef struct {
     GtkBuilder  *builder;
     GtkWidget *ges_livre;
     GtkWidget *box_detail;
     GtkWidget *box_table;
+    GtkCssProvider *styleProvider;
     GtkWidget *container_table;
     GtkWidget *dialog_livre;
     GtkWidget *chercher_livre,
@@ -109,6 +118,7 @@ typedef struct {
     GtkWidget *valider_ajouter,
             *cancel_ajouter,
             *nbr_exemplaire;
+    GtkWidget *erreur_dialog;
     int modify_or_add;//0 modify 1 add
     char modify_titre[50];
 }app_widgets_livres;

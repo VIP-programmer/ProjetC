@@ -1,0 +1,36 @@
+.add_new,.modify,.delete,.retour{
+    border: 1px solid black;
+}
+.add_new{
+    background:#64dd17;
+}
+.modify{
+    background:#00b8d4;
+}
+.delete{
+    background:#ff5722;
+}
+.retour{
+    background:#bdbdbd;
+}
+.erreur_dialog{
+    background: #b00020;
+    color: white;
+    font-size: medium;
+}
+.container label{
+    text-align: center;
+    font-size: 18px;
+    color: darkred;
+    margin-top: 10px;
+    height: 20px;
+    border: 2px solid black;
+}
+.details{
+    display: block;
+    text-align: center;
+    margin-left: 30px;
+    padding: 10px;
+    font-size: 18px;
+    border: 3px ridge #455a64;
+}
