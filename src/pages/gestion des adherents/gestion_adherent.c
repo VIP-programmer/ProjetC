@@ -239,13 +239,13 @@ void afficherAdherent(listeAdherents tete,app_widgets_adher *appWidgetsAdher){
         sprintf(id, "%d", p->infos->num_adh);
         //l'initialisation de a tempox pour cree un new box
         tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
-        //remplair le nom de l'adhrent appartir de la liste des adhrents
+        //remplir le nom de l'adhrent appartir de la liste des adhrents
         lnom=gtk_label_new(p->infos->nom_adh);
-        //remplair le prenom de de l'adhrent appartir de la liste des adhrents
+        //remplir le prenom de de l'adhrent appartir de la liste des adhrents
         lprenom=gtk_label_new(p->infos->prenom_adh);
         //initialisatiion de la button qui va nous apremet d'afficher les detailles d'un adhrents
         butDetail = gtk_button_new_with_mnemonic("détails");
-        //donner un identifient a cette button
+        //donner un identifiant a cette button
         gtk_widget_set_name(butDetail,id);
         //la creation de signal sur sette button
         g_signal_connect( GTK_WIDGET(butDetail), "clicked", G_CALLBACK( on_detail_clicked ),appWidgetsAdher);
@@ -676,6 +676,7 @@ void gestionAdherents(app_widgets_home *appWidgetsHome){
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->erreur_dialog), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     //l'affichege de la liste des adhrent
     afficherAdherent(liste, appWidgetsAdher);
+    gtk_window_set_title((GtkWindow *) appWidgetsAdher->dialog, "Ajouter ou modifier");
     //connecter les signals
     gtk_builder_connect_signals(appWidgetsAdher->builder, appWidgetsAdher);
     //cacher la button de retourne apres la recherche

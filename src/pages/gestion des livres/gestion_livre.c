@@ -238,13 +238,6 @@ void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre){
     for(iter = children; iter != NULL; iter = g_list_next(iter))
         gtk_widget_destroy(GTK_WIDGET(iter->data));
     g_list_free(children);//liberie la liste des enfants
-    ltitre=gtk_label_new("Titre");// la creation d'un label pour le titre
-    lcategorie=gtk_label_new("Categorie");//la creation d'un label pour la categorie
-    gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);//la positionemeent de titre dans la table
-    gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);//la positionment de la categorie de livre dans la table
-    gtk_box_pack_start((GtkBox *) tempBox, gtk_label_new("Actions"), 1, 1, 0);//la positionment de les actions dans la table
-    gtk_box_set_homogeneous((GtkBox *) tempBox, 1);//to specify whether or not all children of the GtkBox are forced to get the same amount of space.
-    gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);//L’enfant est emballé après tout autre enfant emballé en référence au début de la box.
     //si la liste des lvres est vide
     if(tete==NULL){tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
         ltitre=gtk_label_new("Vide");//remplaire par le mot vide
@@ -286,14 +279,7 @@ void afficherUnLive(int num,app_widgets_livres *appWidgetsLivre){
     for(iter = children; iter != NULL; iter = g_list_next(iter))
         gtk_widget_destroy(GTK_WIDGET(iter->data));
     g_list_free(children);//liberie les pointeur qui point sur ses children
-    ltitre=gtk_label_new("Titre");// creation de lable d'entete de la table
-    lcategorie=gtk_label_new("Categorie");// creation de lable d'entete de la table
-    gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 0, 0);//Ajoute widget à la tembox, emballé avec référence au début de la tembox
-    gtk_box_pack_start((GtkBox *) tempBox, lcategorie, 1, 0, 0);//Ajoute widget à la tembox, emballé avec référence au début de la tembox
-    gtk_box_pack_start((GtkBox *) tempBox, gtk_label_new("Actions"), 1, 1, 0);//Ajoute widget à la tembox, emballé avec référence au début de la tembox
-    gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
-    gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);//Ajoute widget à la tembox, emballé avec référence au début de la tembox
-//    afficher les livres qui sont pas emprunter
+//    afficher le livre
     if (!liteLivre || num ==-1)
     {
         tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
@@ -646,6 +632,7 @@ void gestionLivres(app_widgets_home *appWidgetsHome){
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->chercher_livre), "clicked", G_CALLBACK(on_recherche_livre_clicked), appWidgetsLivre);//l'initialisation de signal de boutton de validation de recherche
     g_signal_connect(GTK_WIDGET(appWidgetsLivre->annuler_chercher_livre), "clicked", G_CALLBACK(on_cancel_recherche_livre_clicked ), appWidgetsLivre);//l'initialisation de la boutton de retoure e la recherche
 
+    gtk_window_set_title((GtkWindow *) appWidgetsLivre->dialog_livre, "Ajouter ou modifier");
     afichageListeLivre(liteLivre, appWidgetsLivre);//l'appelle a la fonction d'affichage des livres pour afficher la liste des livre
     gtk_builder_connect_signals(appWidgetsLivre->builder, appWidgetsLivre);//coonecter tous les signalle que on est initialisie
     gtk_widget_hide(appWidgetsLivre->annuler_chercher_livre);//masquer le boutton de retoure qui est affiche apprer le recherche d'une livre

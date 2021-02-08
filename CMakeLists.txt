@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(ProjetC)
+project(Bibilo-ENSIAS)
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_CXX_FLAGS} -std=c99 -rdynamic")
 
@@ -11,5 +11,5 @@ link_directories(${GTK3_LIBRARY_DIRS} )
 
 add_definitions(${GTK3_CFLAGS_OTHER})
 
-add_executable(Projet_C src/main.c "src/pages/gestion des adherents/gestion_adherent.h" "src/pages/gestion des adherents/gestion_adherent.c" "src/pages/gestion des livres/gestion_livre.h" "src/pages/gestion des livres/gestion_livre.c" "src/pages/gestion des empruntes/gestion_emprunte.h" "src/pages/gestion des empruntes/gestion_emprunte.c" "src/pages/page accueil/home.h" "src/pages/page accueil/home.c" src/headers/header.h)
-target_link_libraries(Projet_C ${GTK3_LIBRARIES})
+add_executable(BiblioENSIAS src/main.c "src/pages/gestion des adherents/gestion_adherent.h" "src/pages/gestion des adherents/gestion_adherent.c" "src/pages/gestion des livres/gestion_livre.h" "src/pages/gestion des livres/gestion_livre.c" "src/pages/gestion des empruntes/gestion_emprunte.h" "src/pages/gestion des empruntes/gestion_emprunte.c" "src/pages/page accueil/home.h" "src/pages/page accueil/home.c" src/headers/header.h)
+target_link_libraries(BiblioENSIAS ${GTK3_LIBRARIES})

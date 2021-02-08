@@ -10,18 +10,24 @@ void on_window_main_destroy(){
 void gerer_pages (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widgets_home *appWidgets){
 
     switch (page_num) { //le teste sur le numéro de la page qui en est entrain d'afficher
+        case 0:
+            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-accueil");
+            break;
         case 1:
             sauvgarderLivres();
             sauvgarderAdherent();
+            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des empruntes");
             gestionEmprents(appWidgets);break;//l'appelle a la fonction gestionEmpruntes qui prepare tous les traitements applicable sur les empruntes
         case 2:
 
             sauvgarderLivres();
             sauvgarderAdherent();
+            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des livres");
             gestionLivres(appWidgets);break;//l'appelle a la fonction gestionLivres qui prepare tous les traitements applicable sur les livres
         case 3:
             sauvgarderLivres();
             sauvgarderAdherent();
+            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des adherents");
             gestionAdherents(appWidgets);break;//l'appelle a la fonction gestionAdherent qui prepare tous les traitements applicable sur les adhérents
     }
 }void startHome(int argc, char *argv[]){
