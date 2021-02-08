@@ -4,19 +4,19 @@ Ce document vous guide pour bien executé l'application dans votre machine
 
 ## INSTALLATION COMPILATEUR C
 
-###le GCC
+### le GCC
 
 - dans la comande tapez:
 
       $ sudo apt install gcc
 
-###le build-essential
+### le build-essential
 
 - dans la comande tapez:
 
       $ sudo apt install build-essential
 
-###Check GCC version
+### Check GCC version
 
 - dans la comande tapez:
 
