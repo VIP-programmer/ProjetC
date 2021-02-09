@@ -590,7 +590,7 @@
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
-            <property name="pixbuf">../../Projet_C/images/welcome.png</property>
+            <property name="pixbuf">../images/welcome.png</property>
           </object>
         </child>
         <child type="tab">
