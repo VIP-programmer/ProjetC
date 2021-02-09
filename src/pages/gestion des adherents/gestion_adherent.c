@@ -633,7 +633,7 @@ void gestionAdherents(app_widgets_home *appWidgetsHome){
     g_signal_connect(GTK_WIDGET(appWidgetsAdher->btn_modifier), "clicked", G_CALLBACK(on_modifier_adherent), appWidgetsAdher);
     //l'initialisation de la button de la supprision d'un adhrent
     g_signal_connect(GTK_WIDGET(appWidgetsAdher->btn_supprimer), "clicked", G_CALLBACK(on_supprimer_adherent), appWidgetsAdher);
-//les style css
+    //les style css
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->ajouter_adr), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->TH_table), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->container_adher_detail), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -641,6 +641,24 @@ void gestionAdherents(app_widgets_home *appWidgetsHome){
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->supprimer_adr), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->retour_table), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     gtk_style_context_add_provider(gtk_widget_get_style_context(appWidgetsAdher->erreur_dialog), GTK_STYLE_PROVIDER(appWidgetsAdher->styleProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+    /*liste=insererAdherent(creerAdherent("DAHMAN","iliass","iliass@gmail.com","taounate",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("EZ-ZAIM","adnane","adnane@gmail.com","Fes",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Hamdouni","ahmed","ahmed@gmail.com","Fes",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Sadiki","nouha","nouha@gmail.com","Casa",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("samid","karima","karima@gmail.com","Tanger",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Ali","mohamed","mohamed@gmail.com","Meknes",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Khasim","said","said@gmail.com","Taza",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Omari","omar","omar@gmail.com","Ifrane",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("kassimi","rachida","rachida@gmail.com","Safrou",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("salami","salma","salma@gmail.com","Rabat",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("khaldoni","khalid","khalid@gmail.com","Fes",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Samadi","ahmed","ahmed@gmail.com","Taounate",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Jarmouni","saad","saad@gmail.com","Marrakech",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Sabahi","sabah","sabah@gmail.com","Ouajda",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Jaddi","karima","karima@gmail.com","Titouane",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("kassimi","chakir","chakir@gmail.com","Kenitre",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Ouazzani","mouna","mouna@gmail.com","casa",appWidgetsAdher),liste);
+    liste=insererAdherent(creerAdherent("Assri","zakaria","zakaria@gmail.com","casa",appWidgetsAdher),liste);*/
     //l'affichege de la liste des adhrent
     afficherAdherent(liste, appWidgetsAdher);
     gtk_window_set_title((GtkWindow *) appWidgetsAdher->dialog, "Ajouter ou modifier");
