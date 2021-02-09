@@ -597,7 +597,7 @@
           <object class="GtkLabel" id="to_home">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">to_home</property>
+            <property name="label" translatable="yes">accueil</property>
           </object>
           <packing>
             <property name="tab_fill">False</property>
@@ -923,7 +923,7 @@
           <object class="GtkLabel" id="to_getion_empr">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">to_getion_empr</property>
+            <property name="label" translatable="yes">gestion empruntes</property>
           </object>
           <packing>
             <property name="position">1</property>
@@ -1356,7 +1356,7 @@
           <object class="GtkLabel" id="to_getion_livre">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">to_getion_livre</property>
+            <property name="label" translatable="yes">gestion livres</property>
           </object>
           <packing>
             <property name="position">2</property>
@@ -1773,7 +1773,7 @@
           <object class="GtkLabel" id="to_getion_adhr">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">to_getion_adhr</property>
+            <property name="label" translatable="yes">gestion adherents</property>
           </object>
           <packing>
             <property name="position">3</property>

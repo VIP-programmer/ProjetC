@@ -2,6 +2,7 @@
 // Created by iliass on 1/14/21.
 //
 #include "home.h"
+int i=0;
 void on_window_main_destroy(){
     sauvgarderAdherent();//la sauvegarde de la liste des adhérents avant quitte l'application
     sauvgarderLivres();
@@ -19,7 +20,9 @@ void gerer_pages (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widge
             gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des empruntes");
             gestionEmprents(appWidgets);break;//l'appelle a la fonction gestionEmpruntes qui prepare tous les traitements applicable sur les empruntes
         case 2:
-
+            if(i==1)
+                printf("hh");
+            i++;
             sauvgarderLivres();
             sauvgarderAdherent();
             gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des livres");
