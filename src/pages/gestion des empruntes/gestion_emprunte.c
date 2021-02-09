@@ -44,14 +44,22 @@ int emprunteLivre(int numAdhr,int numLivre){
         } else{return -1;}
     } else{return -1;}
     //chercher livre dont le num est passé en params
-    while (l && (numLivre!=l->info->num_liv))//chercher livre dont le num est passé en params
-        l=l->suiv;
+    while (l) {//chercher le titre de livre dont le num est passé en params
+        if(numLivre==l->info->num_liv){
+            strcpy(titre,l->info->titre_livre);
+            break;
+        }
+        l = l->suiv;
+    }
 
     if (l){//si existe
-        strcpy(titre,l->info->titre_livre);
-        while (l && strcmp(titre,l->info->titre_livre)==0 &&(l->info->num_liv != -1))
+        while (l){
+            if(strcmp(titre,l->info->titre_livre)==0 && (l->info->num_liv == -1)){
+                break;
+            }
             l=l->suiv;
-        if (l && strcmp(titre,l->info->titre_livre)==0) {//si existe
+        }
+        if (l) {//si existe
             l->info->emprunteur_liv = inCodeEmprunte(numAdhr, l->info->num_liv);//decoder et inserer le numero d'emprunte
         }else return -1;
     } else{return -1;}
