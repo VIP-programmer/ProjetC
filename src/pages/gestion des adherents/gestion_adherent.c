@@ -155,13 +155,11 @@ listeAdherents insererAdherent(donnees * data,listeAdherents tete){
 }
 listeAdherents chargerAdherents(){
     liste=NULL;
-    printf("data %s\n",adhFile);
     donnees * data=Malloc(donnees);//l'allocation memoire d=pour les donner de l'adhrent
     FILE *f=fopen(adhFile,"rb");//ouverture de la fichier des adhrents en mode lecture
     if (!f) return NULL;//au cas d'un erreur d'ouverture de fichier
     else{
         while (fread(data, sizeof(donnees),1,f)==1){// la recuperation d'un seulle adh de fichier
-            printf("%ld\n",ftell(f));
             liste=insererAdherent(data,liste);//l'ajout de ce element dans la liste des adhrents
             data=Malloc(donnees);
         }
@@ -231,8 +229,6 @@ void afficherAdherent(listeAdherents tete,app_widgets_adher *appWidgetsAdher){
         gtk_box_pack_start((GtkBox *) tempBox, lnom, 1, 1, 0);
         //ajouter la table des adhrents dans la box qui va contient la table
         gtk_box_pack_start((GtkBox *) appWidgetsAdher->table_adr, tempBox, 0, 1, 0);
-        //message pour indiquer que la liste est vide dans le consol
-        printf("Liste est vide\n");
     }
     while(p){
         //dans GTK
@@ -259,28 +255,8 @@ void afficherAdherent(listeAdherents tete,app_widgets_adher *appWidgetsAdher){
         gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
         //positioner cette tempBox dans box qui contient la table des adhrents
         gtk_box_pack_start((GtkBox *) appWidgetsAdher->table_adr, tempBox, 0, 1, 0);
-        //consol
-        printf("------------------------------\n");
-        //le numero de l'ahrent
-        printf("| Code:		%d\t\t|\n",p->infos->num_adh);
-        //le nom de l'ahrent
-        printf("| Nom:		%s\t\t|\n",p->infos->nom_adh);
-        //le prenom de l'ahrent
-        printf("| Nom:		%s\t\t|\n",p->infos->prenom_adh);
-        //l'adresse personnelle de l'ahrent
-        printf("| Adresse:	%s\t\t|\n",p->infos->adresse_personnelle);
-        //l'email de l'adrent
-        printf("| Adresse:	%s\t\t|\n",p->infos->adresse_email);
-        //le nombre des livre emprinter par cette adrent
-        printf("| Domaine:	%d\t\t|\n",p->infos->nbre_emprunts_adh);
-        printf("------------------------------\n");
-        printf("               |\n");
-        printf("               V\n");
         p=p->suivant;
     }
-    printf("-----------------------------\n");
-    printf("|            VIDE           |\n");
-    printf("-----------------------------\n");
     //afficher tous les widget que on est cree d'une maniere recursive
     gtk_widget_show_all(appWidgetsAdher->table_adr);
 }
@@ -306,7 +282,6 @@ void afficherUnAdherent(int numAdhr,app_widgets_adher *appWidgetsAdher){
         gtk_box_pack_start((GtkBox *) tempBox, lnom, 0, 1, 0);
         gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
         gtk_box_pack_start((GtkBox *) appWidgetsAdher->table_adr, tempBox, 0, 1, 0);
-        printf("Liste est vide\n");
     }
     //chercher l'adherant
     while (p && numAdhr!=p->infos->num_adh)
@@ -334,14 +309,6 @@ void afficherUnAdherent(int numAdhr,app_widgets_adher *appWidgetsAdher){
         gtk_box_set_homogeneous((GtkBox *) tempBox, 1);//donner une taille egale a les enfants de tempBox
         //positioner cette tempBox dans box qui contiant la table des adhrents
         gtk_box_pack_start((GtkBox *) appWidgetsAdher->table_adr, tempBox, 0, 1, 0);
-        printf("------------------------------\n");
-        printf("| Code:		%d\t\t|\n",p->infos->num_adh);
-        printf("| Nom:		%s\t\t|\n",p->infos->nom_adh);
-        printf("| Nom:		%s\t\t|\n",p->infos->prenom_adh);
-        printf("| Adresse:	%s\t\t|\n",p->infos->adresse_personnelle);
-        printf("| Adresse:	%s\t\t|\n",p->infos->adresse_email);
-        printf("| Domaine:	%d\t\t|\n",p->infos->nbre_emprunts_adh);
-        printf("------------------------------\n");
     }
     //affichage de tous le contenu de la table des adhrenat (son visible)
     gtk_widget_show_all(appWidgetsAdher->table_adr);

@@ -54,7 +54,7 @@ int emprunteLivre(int numAdhr,int numLivre){
 
     if (l){//si existe
         while (l){
-            if(strcmp(titre,l->info->titre_livre)==0 && (l->info->num_liv == -1)){
+            if(strcmp(titre,l->info->titre_livre)==0 && (l->info->emprunteur_liv == -1)){
                 break;
             }
             l=l->suiv;
@@ -160,7 +160,6 @@ void afficheLivreEmpruntes(listeLivre* livres,app_widgets_empr *app_wdgts){
         ltitre=gtk_label_new("Vide");
         gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 1, 0);
         gtk_box_pack_start((GtkBox *) app_wdgts->table_empr, tempBox, 0, 1, 0);
-        printf("la liste est vide !!");
     }
     else{
         //parcours la liste
@@ -201,7 +200,7 @@ int rendreLivre(int idADher,char *titreLivre){
         } else{return -1;}
     } else{return -1;}
     while (l) {//parcours la liste des livre
-        if (strcmp(titreLivre,l->info->titre_livre)==0 && l->info->emprunteur_liv != 0) {//on cherche par titre
+        if (strcmp(titreLivre,l->info->titre_livre)==0 && l->info->emprunteur_liv != -1) {//on cherche par titre
             tempId = deCodeADR(l->info->emprunteur_liv);
             if (tempId == idADher) break;//si l emprenteur est le meme qu on a passé en params on sort
         }
@@ -214,21 +213,7 @@ int rendreLivre(int idADher,char *titreLivre){
 }
 //handler de botton valider l 'emprunte
 void on_valider_emprunter_clicked(GtkButton *button, app_widgets_empr *app_wdgts){
-    int idLivre,idAdher;
-    char *idL=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre)
-    ,*idA=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr);
-    //si il y a qlq chose selectioné
-    if( idA && idL) {
-        strcpy(idA,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr));
-        strcpy(idL,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre));
-        idAdher=atoi(idA);//obtenir l id adherent
-        idLivre=atoi(idL);//obtenir l'id livre
-        emprunteLivre(idAdher,idLivre);//emprunter un livre
-        gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_DELETE_EVENT);//envoi de signal pour dialog
-        afficheLivreEmpruntes(liste_livres, app_wdgts);//afficher les empruntes
-    }else{
-        afficheErreurEmpr("on n a pas pu faire cette operation",globalWidgEmpr);//afficher message d erreur
-    }
+    gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_OK);//envoi de signal pour dialog
 }
 //handler de botton annuler emprunte
 void on_cancel_emprunter_clicked(GtkButton *button, app_widgets_empr *app_wdgts){
@@ -243,6 +228,9 @@ void on_btn_retourner_empr_clicked(GtkButton *button, app_widgets_empr *app_wdgt
 //handler de botton emprunte
 void on_btn_emprunte_clicked(GtkButton *button, app_widgets_empr *app_wdgts){
     GList* list_items=NULL;
+    char *idL,*idA;
+    int idLivr,idAdhr;
+    int resp;
     int position=0;
     char nomAdher[50],idAdher[4];
     char nomLivre[50],idLivre[4];
@@ -293,8 +281,27 @@ void on_btn_emprunte_clicked(GtkButton *button, app_widgets_empr *app_wdgts){
      */
     gtk_combo_box_set_active((GtkComboBox *) app_wdgts->choix_adhr, 0);
     gtk_combo_box_set_active((GtkComboBox *) app_wdgts->choix_livre, 0);
-    gtk_dialog_run(GTK_DIALOG (app_wdgts->dialog));
-
+    resp=gtk_dialog_run(GTK_DIALOG (app_wdgts->dialog));
+    switch (resp) {
+        case GTK_RESPONSE_OK:
+            idL=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre);
+            idA=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr);
+            //si il y a qlq chose selectioné
+            if( idA && idL) {
+                strcpy(idA,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr));
+                strcpy(idL,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre));
+                idAdhr=atoi(idA);//obtenir l id adherent
+                idLivr=atoi(idL);//obtenir l'id livre
+                emprunteLivre(idAdhr,idLivr);//emprunter un livre
+                gtk_dialog_response((GtkDialog *) app_wdgts->dialog, GTK_RESPONSE_DELETE_EVENT);//envoi de signal pour dialog
+                afficheLivreEmpruntes(liste_livres, app_wdgts);//afficher les empruntes
+            }else{
+                afficheErreurEmpr("on n a pas pu faire cette operation",globalWidgEmpr);//afficher message d erreur
+            }
+            break;
+        case GTK_RESPONSE_DELETE_EVENT:
+            break;
+    }
     //afficher le dialog
     gtk_widget_hide(app_wdgts->dialog);
 }

@@ -3,4 +3,4 @@
 #include "../gestion des livres/gestion_livre.h"
 #include "../gestion des empruntes//gestion_emprunte.h"
 
-void startHome(int argc, char *argv[]);
+void startHome(int argc, char *argv[]);//fonction qui gere l'ensemble des pages

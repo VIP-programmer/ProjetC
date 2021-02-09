@@ -194,16 +194,6 @@ listeLivre *trouverPlageLivre(char* titre,listeLivre *livres){
     return tab;
 }
 
-//l'affichag des information d'un livre dans le console
-void afficherLivre(livre* l){
-    printf("le numero de livre est :%d\n",l->num_liv);
-    printf("le titre de livre est :%s\n",l->titre_livre);
-    printf("la categorie de livre est :%d\n",l->ctegorie);
-    printf("le numero de l'emprunteur de ce livre :%d\n",l->emprunteur_liv);
-    printf("les information de l'auteur :\n");
-    printf("le nom :%s\n",l->auteur_liv.nom_aut);
-    printf("le prenom :%s\n",l->auteur_liv.prenom_aut);
-}
 //si on click sur le boutton detaille d'un livre dans la table on va afficher les information sur cette livre
 void on_livre_detail_clicked(GtkButton *button, app_widgets_livres *app_wdgts){//app_widgets_home *app_wdgts){
     char titre[30];
@@ -243,12 +233,10 @@ void afichageListeLivre(listeLivre *tete, app_widgets_livres *appWidgetsLivre){
         ltitre=gtk_label_new("Vide");//remplaire par le mot vide
         gtk_box_pack_start((GtkBox *) tempBox, ltitre, 1, 1, 0);//positioner ce mot dans la table
         gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);//posisione la tempbox dan la box de la table des livres
-        printf("la liste est vide !!");
     }
     else{
         //parcorir la liste des livre
         while(temp!=NULL){
-            afficherLivre(temp->info);//l'affichage dans le console
 
             tempBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);//l'initialisation de la tempbox
             ltitre = gtk_label_new(temp->info->titre_livre);//l'initialisation de label de titre avec le titre de l'element cournt de la liste des livres
@@ -287,14 +275,11 @@ void afficherUnLive(int num,app_widgets_livres *appWidgetsLivre){
         gtk_box_pack_start((GtkBox *) tempBox, ltitre, 0, 1, 0);
         gtk_box_set_homogeneous((GtkBox *) tempBox, 1);
         gtk_box_pack_start((GtkBox *) appWidgetsLivre->box_table, tempBox, 0, 1, 0);
-        printf("Liste est vide\n");
     }
     //le parcoure de la liste des livres
     while (temp && num!=temp->info->num_liv)
         temp=temp->suiv;
     if (temp){
-        afficherLivre(temp->info);//l'affichage dans le console
-
         tempBox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
         ltitre=gtk_label_new(temp->info->titre_livre);//initialisie le lable titre de livre
         lcategorie=gtk_label_new(CATEGS[temp->info->ctegorie]);//initialisie le lable categorie de livre
@@ -377,7 +362,7 @@ listeLivre* chargerLivres(){
     liteLivre=NULL;
     f=fopen(livreFile,"rb");//ouvrir le ficher qui contient tous les livres que on est dans la base de donnee
     //si on est un  erreur d'ouverture de fichier
-    if(f==NULL)printf("erreur d'ouvertur\n");
+    if(f==NULL)return NULL;
     else{
         //le parcoure de tous les livres qui sont engestrer dans le fichier pour remplire la liste des livres
         while (fread(l, sizeof(livre),1,f)==1){// la recuperation d'un seulle adh de fichier

@@ -2,11 +2,10 @@
 // Created by iliass on 1/14/21.
 //
 #include "home.h"
-int i=0;
 void on_window_main_destroy(){
     sauvgarderAdherent();//la sauvegarde de la liste des adhérents avant quitte l'application
-    sauvgarderLivres();
-    gtk_main_quit();
+    sauvgarderLivres();//la sauvegarde de la liste des livres avant quitte l'application
+    gtk_main_quit();//on quit l app
 }
 void gerer_pages (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widgets_home *appWidgets){
 
@@ -15,14 +14,11 @@ void gerer_pages (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widge
             gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-accueil");
             break;
         case 1:
-            sauvgarderLivres();
-            sauvgarderAdherent();
-            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des empruntes");
+            sauvgarderLivres();//charger les livres
+            sauvgarderAdherent();//charger les adherentes
+            gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des empruntes");//appliquer un titre
             gestionEmprents(appWidgets);break;//l'appelle a la fonction gestionEmpruntes qui prepare tous les traitements applicable sur les empruntes
         case 2:
-            if(i==1)
-                printf("hh");
-            i++;
             sauvgarderLivres();
             sauvgarderAdherent();
             gtk_window_set_title((GtkWindow *) appWidgets->window, "Bibliothèque ENSIAS-gestion des livres");
@@ -35,15 +31,15 @@ void gerer_pages (GtkNotebook *notebook,GtkWidget *page,guint page_num,app_widge
     }
 }void startHome(int argc, char *argv[]){
     app_widgets_home *appWidgets=g_slice_new(app_widgets_home);
-    gtk_init(&argc, &argv);
-    chargerAdherents();
-    chargerLivres();
-    appWidgets->builder = gtk_builder_new();
-    appWidgets->styleProvider=gtk_css_provider_new();
-    gtk_css_provider_load_from_path(appWidgets->styleProvider,  "../CSS/style.css", NULL);
-    gtk_builder_add_from_file (appWidgets->builder, "../glade/home.glade", NULL);
+    gtk_init(&argc, &argv);//initialisant GTK
+    chargerAdherents();//charger les livres
+    chargerLivres();//charger les adherentes
+    appWidgets->builder = gtk_builder_new();//initialiser builder
+    appWidgets->styleProvider=gtk_css_provider_new();//initialiser style provider
+    gtk_css_provider_load_from_path(appWidgets->styleProvider,  "../CSS/style.css", NULL);//charger le style
+    gtk_builder_add_from_file (appWidgets->builder, "../glade/home.glade", NULL);//charger le template
     appWidgets->window = GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "ges_home"));//l'initialisation de la windows
-    appWidgets->notebook = GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "notebook"));
+    appWidgets->notebook = GTK_WIDGET(gtk_builder_get_object(appWidgets->builder, "notebook"));//initialiser notbook
     g_signal_connect( GTK_WIDGET(appWidgets->notebook), "switch-page", G_CALLBACK( gerer_pages ), appWidgets );//le signale envoyé si en click sur un des éléments de la notebook
     g_signal_connect( GTK_WIDGET(appWidgets->window), "destroy", G_CALLBACK( on_window_main_destroy ),NULL );//le signale envoyé si en click sur le button destroy
     gtk_widget_show(appWidgets->window);//affichage de la windows
