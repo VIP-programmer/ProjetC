@@ -590,7 +590,7 @@ void on_cancel_ajouter_clicked(GtkButton *button, app_widgets_adher *app_wdgts){
 void gestionAdherents(app_widgets_home *appWidgetsHome){
     GList *children, *iter;
     donnees *data=NULL;
-    //liberie la liste qui va contient la liste des livres
+    //liberie la liste qui va contient la liste des adher
     g_slist_free((GSList *) globalWidgAdr);
     //l'initialisation de l'aa_widgets des adhrents
     app_widgets_adher *appWidgetsAdher=g_slice_new(app_widgets_adher);

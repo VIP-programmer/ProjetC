@@ -33,19 +33,27 @@ int deCodeLVR(int numEmpr){
 }
 //fonction qui emprunte un livre
 int emprunteLivre(int numAdhr,int numLivre){
+    char titre[30];
     adherent* p=liste_adhers;
     listeLivre* l=liste_livres;
     while (p && numAdhr!=p->infos->num_adh) //chercher l'adherent dont le num est passé en params
         p=p->suivant;
     if (p){ //si existe
-        if (p->infos->nbre_emprunts_adh <= 3){ // on increment le nbr des empruntes si <=3
+        if (p->infos->nbre_emprunts_adh < 3){ // on increment le nbr des empruntes si <=3
             p->infos->nbre_emprunts_adh ++;
         } else{return -1;}
     } else{return -1;}
+    //chercher livre dont le num est passé en params
     while (l && (numLivre!=l->info->num_liv))//chercher livre dont le num est passé en params
         l=l->suiv;
+
     if (l){//si existe
-        l->info->emprunteur_liv=inCodeEmprunte(numAdhr,numLivre);//decoder et inserer le numero d'emprunte
+        strcpy(titre,l->info->titre_livre);
+        while (l && strcmp(titre,l->info->titre_livre)==0 &&(l->info->num_liv != -1))
+            l=l->suiv;
+        if (l && strcmp(titre,l->info->titre_livre)==0) {//si existe
+            l->info->emprunteur_liv = inCodeEmprunte(numAdhr, l->info->num_liv);//decoder et inserer le numero d'emprunte
+        }else return -1;
     } else{return -1;}
     return 1;
 }
@@ -199,9 +207,10 @@ int rendreLivre(int idADher,char *titreLivre){
 //handler de botton valider l 'emprunte
 void on_valider_emprunter_clicked(GtkButton *button, app_widgets_empr *app_wdgts){
     int idLivre,idAdher;
-    char idL[4],idA[4];
+    char *idL=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre)
+    ,*idA=gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr);
     //si il y a qlq chose selectioné
-    if(gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr) && gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre)) {
+    if( idA && idL) {
         strcpy(idA,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_adhr));
         strcpy(idL,gtk_combo_box_get_active_id((GtkComboBox *) app_wdgts->choix_livre));
         idAdher=atoi(idA);//obtenir l id adherent

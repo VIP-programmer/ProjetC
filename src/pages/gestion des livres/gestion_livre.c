@@ -586,8 +586,10 @@ void on_cancel_recherche_livre_clicked(GtkButton *button,app_widgets_livres *app
 void gestionLivres(app_widgets_home *appWidgetsHome){
     GList *children, *iter;
     livre *donnes=NULL;
+    //liberie la liste qui va contient la liste des livres
     g_slist_free((GSList *) globalWidgLivre);
-    app_widgets_livres *appWidgetsLivre=g_slice_new(app_widgets_livres);//l'initialisation de l'appwidget
+    //l'initialisation de l'aa_widgets des adhrents
+    app_widgets_livres *appWidgetsLivre=g_slice_new(app_widgets_livres);
     globalWidgLivre=appWidgetsLivre;
     appWidgetsLivre->builder=appWidgetsHome->builder;//l'initialisation de builder par le puilder de la page home
 

@@ -534,22 +534,22 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/icons8-search-client-30.png</property>
+    <property name="pixbuf">../images/icons8-search-client-30.png</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/return.png</property>
+    <property name="pixbuf">../images/return.png</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/icons8-search-client-30.png</property>
+    <property name="pixbuf">../images/icons8-search-client-30.png</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/return.png</property>
+    <property name="pixbuf">../images/return.png</property>
   </object>
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
@@ -559,7 +559,7 @@
   <object class="GtkImage" id="image6">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../Projet_C/images/return.png</property>
+    <property name="pixbuf">../images/return.png</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
